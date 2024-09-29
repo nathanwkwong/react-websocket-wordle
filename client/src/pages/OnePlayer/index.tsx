@@ -1,5 +1,9 @@
-import css from './styles.module.scss';
+import { PanelGame } from '../../components/PanelGame';
 
 export const PageOnePlayer = () => {
-    return <div className={css.container}>One Players</div>;
+    return (
+        <div>
+            <PanelGame />
+        </div>
+    );
 };

@@ -1,4 +1,4 @@
-export const GAME_WORDS = [
+export const ALL_WORDS = [
     'which',
     'there',
     'their',

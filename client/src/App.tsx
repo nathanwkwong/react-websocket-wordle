@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { PageHome } from './pages/Home';
 import { PageOnePlayer } from './pages/OnePlayer';
 import { PageTwoPlayer } from './pages/TwoPlayer';
-import css from './styles.module.scss';
 
 const router = createBrowserRouter([
     {
@@ -25,7 +24,7 @@ const router = createBrowserRouter([
 
 function App() {
     return (
-        <div className={css.container}>
+        <div>
             <RouterProvider router={router} />
         </div>
     );
