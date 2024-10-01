@@ -1,10 +1,10 @@
+import { useOnePlayerWordle } from './hook';
 import { BoardWords } from '../BoardWords';
 import { Keyboard } from '../Keyboard';
-import { useWebScoketWordle } from '../../hooks/useWebSocketWordle';
 
 export const PanelGame = () => {
     const { currGuess, wordGuessList, round, usedLetters, isGameEnded } =
-        useWebScoketWordle();
+        useOnePlayerWordle();
 
     const handlePlayAgain = () => {
         window.location.reload();

@@ -21,7 +21,6 @@ export const useOnePlayerWordle = () => {
     useEffect(() => {
         const newAnswer = generateGameWord();
         setAnswer(newAnswer);
-
         console.log('answer', newAnswer);
     }, []);
 

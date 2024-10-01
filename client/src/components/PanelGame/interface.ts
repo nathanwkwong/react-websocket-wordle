@@ -6,3 +6,13 @@ interface LetterGuess {
 }
 
 export type WordGuess = LetterGuess[];
+
+export type GUESS_VALIDATION = 'NOT_REAL_WORD' | 'VALID' | 'INVALID';
+
+export interface CheckAnswerData {
+    isCorrect: boolean;
+    formattedGuessWord: WordGuess;
+    answer: string | null;
+    guess: string;
+    validation: GUESS_VALIDATION;
+}
