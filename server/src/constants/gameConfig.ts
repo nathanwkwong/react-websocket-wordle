@@ -1,5 +1,5 @@
 export const GAME_CONFIG = {
-    maxRounds: 5,
+    maxRound: 1,
     gamePickedWords: [
         'which',
         'plane',

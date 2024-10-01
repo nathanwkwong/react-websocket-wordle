@@ -37,13 +37,14 @@ io.on('connection', (socket) => {
         console.log('HERE IS: ', newAnswer, socket.id);
 
         const newGame = {
-            maxRound: GAME_CONFIG.maxRounds
+            maxRound: GAME_CONFIG.maxRound
         };
         socket.emit('new_game', newGame);
     });
 
     socket.on('check_answer', (data: CheckAnswerData) => {
         const currGuess = data.guess;
+        const currRound = data.round;
         const answer = roomData[socket.id].answer;
 
         let result = {};
@@ -57,17 +58,20 @@ io.on('connection', (socket) => {
                 validation: 'NOT_REAL_WORD'
             };
         } else {
-            const formattedGuessWord = formatGuessWord(answer, currGuess);
-
+            console.log('HERE IS: ', currRound, GAME_CONFIG.maxRound);
             result = {
                 isCorrect: answer === data.guess,
                 guess: data.guess,
-                answer: answer === data.guess ? answer : null,
-                formattedGuessWord,
+                answer:
+                    answer === data.guess ||
+                    currRound >= GAME_CONFIG.maxRound - 1
+                        ? answer
+                        : null,
+                formattedGuessWord: formatGuessWord(answer, currGuess),
                 validation: 'VALID'
             };
         }
-
+        console.log('HERE IS: ', result);
         socket.emit('check_answer', result);
     });
 

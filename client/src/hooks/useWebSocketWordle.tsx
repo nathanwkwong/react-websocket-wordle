@@ -63,13 +63,13 @@ export const useWebScoketWordle = () => {
                 alert('Input word is not a real word, please clear and again');
                 return;
             }
+            addNewGuessWord(formattedGuessWord, guess);
 
             if (isCorrect) {
                 setIsCorrectAnswer(true);
-                setAnswer(answer);
             }
 
-            addNewGuessWord(formattedGuessWord, guess);
+            setAnswer(answer);
         });
 
         return () => {
@@ -107,7 +107,8 @@ export const useWebScoketWordle = () => {
             }
 
             socket.emit('check_answer', {
-                guess: currGuess
+                guess: currGuess,
+                round
             });
         }
     };

@@ -9,4 +9,5 @@ export type WordGuess = LetterGuess[];
 
 export interface CheckAnswerData {
     guess: string;
+    round: number;
 }
