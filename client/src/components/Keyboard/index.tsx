@@ -1,6 +1,7 @@
 import { KEY_GROUPS } from './constants';
 import css from './styles.module.scss';
 import { UsedLetters } from './interface';
+import clsx from 'clsx';
 
 interface KeyboardProps {
     usedLetters: UsedLetters;
@@ -20,10 +21,33 @@ export const Keyboard = ({ usedLetters, msgHint }: KeyboardProps) => {
                             return (
                                 <div
                                     key={letter}
-                                    className={
+                                    onClick={() => {
+                                        const event = new KeyboardEvent(
+                                            'keyup',
+                                            {
+                                                key: letter,
+                                                code: `Key${letter.toUpperCase()}`,
+                                                keyCode: letter
+                                                    .toUpperCase()
+                                                    .charCodeAt(0),
+                                                charCode: letter
+                                                    .toUpperCase()
+                                                    .charCodeAt(0),
+                                                which: letter
+                                                    .toUpperCase()
+                                                    .charCodeAt(0),
+                                                bubbles: true
+                                            }
+                                        );
+                                        document.dispatchEvent(event);
+                                    }}
+                                    className={clsx([
+                                        css.key,
                                         css[`key-${usedLetters[letter]}`]
-                                    }>
-                                    {letter}
+                                    ])}>
+                                    {letter.length > 1
+                                        ? letter
+                                        : letter.toUpperCase()}
                                 </div>
                             );
                         })}
