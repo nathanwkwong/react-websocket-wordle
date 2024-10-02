@@ -1,25 +1,35 @@
-import { WordGuess } from '../PanelGame/interface';
+import { WordGuess } from '../../types/types';
 import { RowWordGuess } from '../RowWordGuess';
 
 interface BoardGameProps {
-    currGuess: string;
+    currGuess?: string;
     wordGuessList: WordGuess[];
     round: number;
+    showLetter?: boolean;
 }
 
 export const BoardWords = ({
     currGuess,
     wordGuessList,
-    round
+    round,
+    showLetter = true
 }: BoardGameProps) => {
     return (
         <div>
             {wordGuessList.map((wordGuess, index) => {
                 const isCurrGuess = round === index;
-                return isCurrGuess ? (
-                    <RowWordGuess key={index} currGuess={currGuess} />
+                return isCurrGuess && showLetter ? (
+                    <RowWordGuess
+                        key={index}
+                        currGuess={currGuess}
+                        showLetter={showLetter}
+                    />
                 ) : (
-                    <RowWordGuess key={index} guess={wordGuess} />
+                    <RowWordGuess
+                        key={index}
+                        guess={wordGuess}
+                        showLetter={showLetter}
+                    />
                 );
             })}
         </div>

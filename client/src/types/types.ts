@@ -16,3 +16,9 @@ export interface CheckAnswerData {
     guess: string;
     validation: GUESS_VALIDATION;
 }
+
+export interface OpponentCheckAnswerData {
+    isCorrect: boolean;
+    answer: string | null;
+    maskedGuessWord: WordGuess;
+}

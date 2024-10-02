@@ -1,9 +1,9 @@
-import { PanelGame } from '../../components/PanelGame';
+import { PanelGameOnePlayer } from '../../components/PanelGameOnePlayer';
 
 export const PageOnePlayer = () => {
     return (
         <div>
-            <PanelGame />
+            <PanelGameOnePlayer />
         </div>
     );
 };

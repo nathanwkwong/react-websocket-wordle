@@ -1,4 +1,4 @@
-import { LetterScore } from '../PanelGame/interface';
+import { LetterScore } from '../../types/types';
 
 export interface UsedLetters {
     [letter: string]: LetterScore;

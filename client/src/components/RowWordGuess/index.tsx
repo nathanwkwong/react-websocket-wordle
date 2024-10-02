@@ -1,20 +1,25 @@
 import clsx from 'clsx';
-import { WordGuess } from '../PanelGame/interface';
+import { WordGuess } from '../../types/types';
 import css from './styles.module.scss';
 
 interface RowWordGuessProps {
     guess?: WordGuess;
     currGuess?: string;
+    showLetter: boolean;
 }
 
-export const RowWordGuess = ({ guess, currGuess }: RowWordGuessProps) => {
+export const RowWordGuess = ({
+    guess,
+    currGuess,
+    showLetter
+}: RowWordGuessProps) => {
     if (currGuess) {
         return (
             <div className={clsx([css.container, css.current])}>
                 {currGuess.split('').map((letter, index) => {
                     return (
                         <div key={index} className={css.filled}>
-                            {letter}
+                            {showLetter ? letter : ''}
                         </div>
                     );
                 })}
@@ -43,7 +48,7 @@ export const RowWordGuess = ({ guess, currGuess }: RowWordGuessProps) => {
             {guess.map((letter, index) => {
                 return (
                     <div key={index} className={css[`score-${letter.score}`]}>
-                        {letter.letter}
+                        {showLetter ? letter.letter : ''}
                     </div>
                 );
             })}

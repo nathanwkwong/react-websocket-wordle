@@ -1,9 +1,9 @@
-import css from './styles.module.scss';
+import { PanelGameTwoPlayers } from '../../components/PanelGameTwoPlayers';
 
 export const PageTwoPlayer = () => {
     return (
-        <div className={css.container}>
-            <button>Two Players</button>
+        <div>
+            <PanelGameTwoPlayers />
         </div>
     );
 };
