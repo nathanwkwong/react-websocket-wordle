@@ -1,18 +1,18 @@
+import { roomMap } from '../data/data';
 import { GAME_CONFIG } from '../constants/gameConfig';
-import { WordGuess } from '../types/types';
+import { RoomData, WordGuess } from '../types/types';
 
-export const generateGameWord = () => {
+export const generateGameWord = (): string => {
     const randomIndex = Math.floor(
         Math.random() * GAME_CONFIG.gamePickedWords.length
     );
     return GAME_CONFIG.gamePickedWords[randomIndex];
 };
 
-export const isAlphabeticalInput = (input: string) => {
-    return !!input.match(/^[A-Za-z]$/i);
-};
-
-export const formatGuessWord = (answer: string, currGuess: string) => {
+export const formatGuessWord = (
+    answer: string,
+    currGuess: string
+): WordGuess => {
     let answerArr: (string | null)[] = [...answer];
     let formattedGuessWord: WordGuess = [...currGuess].map((letter: string) => {
         return { score: 'miss', letter };
@@ -35,4 +35,12 @@ export const formatGuessWord = (answer: string, currGuess: string) => {
     });
 
     return formattedGuessWord;
+};
+
+export const findAvailableRoom = (): RoomData | null => {
+    const roomKey = Object.keys(roomMap).find(
+        (roomKey) => roomMap[roomKey].status === 'waiting'
+    );
+
+    return roomKey ? roomMap[roomKey] : null;
 };
