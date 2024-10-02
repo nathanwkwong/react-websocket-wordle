@@ -8,7 +8,6 @@ import {
 import { UsedLetters } from '../Keyboard/interface';
 import {
     JoinRoomTwoPlayersData,
-    OpponentDisconnectData,
     OpponentRunOutOfGuessData,
     RoomStatus
 } from './types';
@@ -29,6 +28,7 @@ export const useWordleTwoPlayers = () => {
 
     const [msgGameEnd, setMsgGameEnd] = useState<string>('');
     const [msgHint, setMsgHint] = useState<string>('');
+    const [opponentMsgHint, setOpponentMsgHint] = useState<string>('');
 
     const [answer, setAnswer] = useState<string | null>(null);
     const [currGuess, setCurrGuess] = useState<string>('');
@@ -87,7 +87,7 @@ export const useWordleTwoPlayers = () => {
             'opponent_run_out_of_guess',
             (data: OpponentRunOutOfGuessData) => {
                 setMsgGameEnd(
-                    'You win! Opponent run out of guess. \n Answer: ' +
+                    'You win! Opponent run out of guesses. \n Answer: ' +
                         data.answer
                 );
                 setRoomStatus('self_win');
@@ -102,7 +102,7 @@ export const useWordleTwoPlayers = () => {
 
         return () => {
             socket.off('join_room_two_play');
-            socket.off('opponent_guess');
+            socket.off('opponent_run_out_of_guess');
             socket.off('server_error');
         };
     }, []);
@@ -153,19 +153,24 @@ export const useWordleTwoPlayers = () => {
     }, [addNewGuessWord]);
 
     useEffect(() => {
-        socket.on('opponent_disconnected', (data: OpponentDisconnectData) => {
+        socket.on('opponent_disconnected', () => {
+            console.log('HERE IS: roomStatusroomStatus', roomStatus);
             if (
                 roomStatus === 'self_win' ||
                 roomStatus === 'opponent_win' ||
-                roomStatus === 'waiting'
+                roomStatus === 'waiting' ||
+                roomStatus === 'ended'
             ) {
                 return;
             }
-
-            setRoomStatus('self_win');
-            setAnswer(data.answer);
-            setMsgGameEnd('Opponent disconnected. \n Answer: ' + data.answer);
+            setOpponentMsgHint(
+                'Opponent disconnected. \n But you can still complete the game.'
+            );
         });
+
+        return () => {
+            socket.off('opponent_disconnected');
+        };
     }, [roomStatus]);
 
     const handleKeyUp = (e: KeyboardEvent) => {
@@ -298,6 +303,7 @@ export const useWordleTwoPlayers = () => {
         roomStatus,
         msgGameEnd,
         msgHint,
-        opponentHash
+        opponentHash,
+        opponentMsgHint
     };
 };

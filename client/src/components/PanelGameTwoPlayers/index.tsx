@@ -21,7 +21,8 @@ export const PanelGameTwoPlayers = () => {
         roomStatus,
         msgGameEnd,
         msgHint,
-        opponentHash
+        opponentHash,
+        opponentMsgHint
     } = useWordleTwoPlayers();
 
     useEffect(() => {
@@ -58,7 +59,9 @@ export const PanelGameTwoPlayers = () => {
                 <div>
                     <Header
                         title={
-                            opponentHash ? `id: ${opponentHash}` : 'Opponent'
+                            opponentHash
+                                ? `Opponent: ${opponentHash}`
+                                : 'Opponent'
                         }
                     />
                     <BoardWords
@@ -71,6 +74,11 @@ export const PanelGameTwoPlayers = () => {
                         <span className={css.msgMatching}>
                             Matching
                             <LoadingDots />
+                        </span>
+                    )}
+                    {opponentMsgHint && (
+                        <span className={css.msgMatching}>
+                            {opponentMsgHint}
                         </span>
                     )}
                 </div>

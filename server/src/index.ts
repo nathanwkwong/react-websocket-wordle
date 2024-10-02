@@ -122,7 +122,6 @@ io.on('connection', (socket) => {
                 ...newGame,
                 opponentHash: playerId.slice(0, 5)
             });
-            // io.sockets.in(roomId).emit('join_room_two_play', newGame);
         } else {
             const newRoomId = socket.id + '_room';
             const answer = generateGameWord();
@@ -264,20 +263,12 @@ io.on('connection', (socket) => {
                         ? roomMap[roomKey].playerTwoId
                         : roomMap[roomKey].playerOneId;
 
-                const answer = roomMap[roomKey].answer;
-
                 if (!opponentId) {
                     socket.emit('server_error');
                     return;
                 }
 
-                const result = {
-                    answer
-                };
-
-                socket.to(opponentId).emit('opponent_disconnected', result);
-
-                delete roomMap[roomKey];
+                socket.to(opponentId).emit('opponent_disconnected');
             }
         });
     });

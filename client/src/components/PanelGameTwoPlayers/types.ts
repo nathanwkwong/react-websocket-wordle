@@ -15,7 +15,3 @@ export interface JoinRoomTwoPlayersData {
 export interface OpponentRunOutOfGuessData {
     answer: string;
 }
-
-export interface OpponentDisconnectData {
-    answer: string;
-}

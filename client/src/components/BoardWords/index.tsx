@@ -1,6 +1,5 @@
 import { WordGuess } from '../../types/types';
 import { RowWordGuess } from '../RowWordGuess';
-import css from './styles.module.scss';
 
 interface BoardGameProps {
     currGuess?: string;
