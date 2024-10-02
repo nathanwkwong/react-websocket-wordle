@@ -1,5 +1,6 @@
 .container {
     max-width: 500px;
+    min-width: 500px;
     margin: 20px auto;
 
     .row {
@@ -28,5 +29,31 @@
             color: #fff;
             transition: all 0.3s ease-in;
         }
+    }
+
+    .msgHintWrapper {
+        min-height: 30px;
+        .msgHint {
+            text-align: center;
+            animation: horizontal-shaking 0.5s;
+        }
+    }
+}
+
+@keyframes horizontal-shaking {
+    0% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(5px);
+    }
+    50% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+    100% {
+        transform: translateX(0);
     }
 }

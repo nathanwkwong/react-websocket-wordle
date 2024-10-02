@@ -1,10 +1,15 @@
+import { useEffect, useState } from 'react';
 import { BoardWords } from '../BoardWords';
 import { Header } from '../Header';
 import { Keyboard } from '../Keyboard';
+import { Modal } from '../Modal';
 import { useWordleTwoPlayers } from './hook';
 import css from './styles.module.scss';
+import { LoadingDots } from '../LoadingDots';
 
 export const PanelGameTwoPlayers = () => {
+    const [showModal, setShowModal] = useState(false);
+
     const {
         currGuess,
         wordGuessList,
@@ -13,8 +18,16 @@ export const PanelGameTwoPlayers = () => {
         round,
         usedLetters,
         isGameEnded,
-        roomStatus
+        roomStatus,
+        msgGameEnd,
+        msgHint
     } = useWordleTwoPlayers();
+
+    useEffect(() => {
+        if (isGameEnded && msgGameEnd) {
+            setShowModal(true);
+        }
+    }, [msgGameEnd, isGameEnded]);
 
     const handlePlayAgain = () => {
         window.location.reload();
@@ -32,14 +45,14 @@ export const PanelGameTwoPlayers = () => {
                     />
 
                     {isGameEnded && (
-                        <button onClick={() => handlePlayAgain()}>
+                        <button
+                            className={css.btnPlayAgain}
+                            onClick={() => handlePlayAgain()}>
                             Play another round
                         </button>
                     )}
-                    {roomStatus === 'waiting' && (
-                        <div>Wait for another player</div>
-                    )}
-                    <Keyboard usedLetters={usedLetters} />
+
+                    <Keyboard usedLetters={usedLetters} msgHint={msgHint} />
                 </div>
                 <div>
                     <Header title="Opponent" />
@@ -49,7 +62,19 @@ export const PanelGameTwoPlayers = () => {
                         wordGuessList={opponentWordGuessList}
                         round={opponentRound}
                     />
+                    {roomStatus === 'waiting' && (
+                        <span className={css.msgMatching}>
+                            Matching
+                            <LoadingDots />
+                        </span>
+                    )}
+                    {roomStatus === 'playing' && (
+                        <span className={css.msgMatching}>Game started</span>
+                    )}
                 </div>
+                {showModal && (
+                    <Modal message={msgGameEnd} setShowModal={setShowModal} />
+                )}
             </div>
         </div>
     );

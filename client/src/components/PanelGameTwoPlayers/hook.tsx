@@ -6,7 +6,12 @@ import {
     WordGuess
 } from '../../types/types';
 import { UsedLetters } from '../Keyboard/interface';
-import { RoomStatus } from './types';
+import {
+    JoinRoomTwoPlayersData,
+    OpponentDisconnectData,
+    OpponentRunOutOfGuessData,
+    RoomStatus
+} from './types';
 import { GAME_CONFIG } from '../../constants/gameConfig';
 import { socket } from '../../utils/socket';
 
@@ -20,6 +25,9 @@ export const useWordleTwoPlayers = () => {
     const [opponentRound, setOpponentRound] = useState<number>(0);
     const [roomStatus, setRoomStatus] = useState<RoomStatus>('waiting');
     const [roomId, setRoomId] = useState<string>('');
+
+    const [msgGameEnd, setMsgGameEnd] = useState<string>('');
+    const [msgHint, setMsgHint] = useState<string>('');
 
     const [answer, setAnswer] = useState<string | null>(null);
     const [currGuess, setCurrGuess] = useState<string>('');
@@ -56,6 +64,7 @@ export const useWordleTwoPlayers = () => {
         updateUsedLetters(formattedGuessWord);
 
         setRound((prevRound) => prevRound + 1);
+        setMsgHint('');
     };
 
     useEffect(() => {
@@ -64,8 +73,7 @@ export const useWordleTwoPlayers = () => {
             hasEmittedNewGame.current = true;
         }
 
-        socket.on('join_room_two_play', (data: any) => {
-            console.log('join_room_two_play', data);
+        socket.on('join_room_two_play', (data: JoinRoomTwoPlayersData) => {
             setMaxRound(data.maxRound);
             setWordGuessList([...Array(data.maxRound)]);
             setOpponentWordGuessList([...Array(data.maxRound)]);
@@ -73,33 +81,23 @@ export const useWordleTwoPlayers = () => {
             setRoomId(data.roomId);
         });
 
-        socket.on('opponent_disconnected', (data: any) => {
-            console.log('HERE IS: ', roomStatus);
-            if (
-                roomStatus === 'self_win' ||
-                roomStatus === 'oppoent_win' ||
-                roomStatus === 'waiting'
-            ) {
-                return;
+        socket.on(
+            'opponent_run_out_of_guess',
+            (data: OpponentRunOutOfGuessData) => {
+                setMsgGameEnd(
+                    'You win! Opponent run out of guess. \n Answer: ' +
+                        data.answer
+                );
+                setRoomStatus('self_win');
+                setAnswer(data.answer);
             }
-
-            setRoomStatus('self_win');
-            setAnswer(data.answer);
-
-            alert('Opponent disconnected, answer: ' + data.answer);
-        });
-
-        socket.on('opponent_run_out_of_guess', (data: any) => {
-            alert('Opponent run out of guess, answer: ' + data.answer);
-            setRoomStatus('self_win');
-            setAnswer(data.answer);
-        });
+        );
 
         return () => {
             socket.off('join_room_two_play');
             socket.off('opponent_guess');
         };
-    }, [addNewOppoentGuessWord]);
+    }, []);
 
     useEffect(() => {
         socket.on('opponent_guess', (data: OpponentCheckAnswerData) => {
@@ -110,11 +108,15 @@ export const useWordleTwoPlayers = () => {
             setAnswer(answer);
 
             if (isCorrect) {
-                setRoomStatus('oppoent_win');
-                alert('Opponent win! Answer: ' + answer);
+                setRoomStatus('opponent_win');
+                setMsgGameEnd('Opponent guess correct! \n Answer: ' + answer);
             }
         });
-    }, [addNewOppoentGuessWord, setOpponentRound]);
+
+        return () => {
+            socket.off('opponent_guess');
+        };
+    }, [addNewOppoentGuessWord]);
 
     useEffect(() => {
         socket.on('check_answer_two_play', (data: CheckAnswerData) => {
@@ -122,14 +124,16 @@ export const useWordleTwoPlayers = () => {
                 data;
 
             if (validation === 'NOT_REAL_WORD') {
-                alert('Input word is not a real word, please clear and again');
+                setMsgHint(
+                    'Input word is not a real word, please clear and again'
+                );
                 return;
             }
             addNewGuessWord(formattedGuessWord, guess);
 
             if (isCorrect) {
                 setRoomStatus('self_win');
-                alert('Correct, you win!');
+                setMsgGameEnd('Correct, you win!');
             }
 
             setAnswer(answer);
@@ -139,6 +143,22 @@ export const useWordleTwoPlayers = () => {
             socket.off('check_answer_two_play');
         };
     }, [addNewGuessWord]);
+
+    useEffect(() => {
+        socket.on('opponent_disconnected', (data: OpponentDisconnectData) => {
+            if (
+                roomStatus === 'self_win' ||
+                roomStatus === 'opponent_win' ||
+                roomStatus === 'waiting'
+            ) {
+                return;
+            }
+
+            setRoomStatus('self_win');
+            setAnswer(data.answer);
+            setMsgGameEnd('Opponent disconnected. \n Answer: ' + data.answer);
+        });
+    }, [roomStatus]);
 
     const handleKeyUp = (e: KeyboardEvent) => {
         if (roomStatus === 'waiting') {
@@ -161,24 +181,32 @@ export const useWordleTwoPlayers = () => {
         }
 
         if (e.key === 'Enter') {
+            setMsgHint('');
+
             if (
                 round > maxRound ||
                 roomStatus === 'self_win' ||
-                roomStatus === 'oppoent_win'
+                roomStatus === 'opponent_win'
             ) {
-                console.log('Game Over');
+                setTimeout(() => {
+                    setMsgHint('Game Over');
+                });
                 return;
             }
 
             if (usedWords.includes(currGuess)) {
-                alert('Duplicated Guess');
+                setTimeout(() => {
+                    setMsgHint('Duplicated Guess');
+                });
                 return;
             }
 
             if (currGuess.length !== GAME_CONFIG.wordLength) {
-                console.log(
-                    `Input word need to be ${GAME_CONFIG.wordLength} characters`
-                );
+                setTimeout(() => {
+                    setMsgHint(
+                        `Input word need to be ${GAME_CONFIG.wordLength} characters`
+                    );
+                });
                 return;
             }
 
@@ -195,7 +223,7 @@ export const useWordleTwoPlayers = () => {
             socket.emit('run_out_of_guess', {
                 roomId
             });
-            alert(`Run out of gussess. You lose! Answer: ${answer}`);
+            setMsgGameEnd(`You lose! Run out of gussess. \n Answer: ${answer}`);
         }
     }, [round, maxRound]);
 
@@ -204,7 +232,7 @@ export const useWordleTwoPlayers = () => {
 
         if (
             roomStatus === 'self_win' ||
-            roomStatus === 'oppoent_win' ||
+            roomStatus === 'opponent_win' ||
             round >= maxRound
         ) {
             window.removeEventListener('keyup', handleKeyUp);
@@ -254,10 +282,12 @@ export const useWordleTwoPlayers = () => {
         wordGuessList,
         opponentWordGuessList,
         isGameEnded:
-            roomStatus === 'oppoent_win' ||
+            roomStatus === 'opponent_win' ||
             roomStatus === 'self_win' ||
             round >= maxRound,
         usedLetters,
-        roomStatus
+        roomStatus,
+        msgGameEnd,
+        msgHint
     };
 };

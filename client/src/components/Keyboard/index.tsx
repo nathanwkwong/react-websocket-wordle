@@ -4,11 +4,15 @@ import { UsedLetters } from './interface';
 
 interface KeyboardProps {
     usedLetters: UsedLetters;
+    msgHint?: string;
 }
 
-export const Keyboard = ({ usedLetters }: KeyboardProps) => {
+export const Keyboard = ({ usedLetters, msgHint }: KeyboardProps) => {
     return (
         <div className={css.container}>
+            <div className={css.msgHintWrapper}>
+                {msgHint && <p className={css.msgHint}>{msgHint}</p>}
+            </div>
             {KEY_GROUPS.map((keyGroup, index) => {
                 return (
                     <div className={css.row} key={index}>

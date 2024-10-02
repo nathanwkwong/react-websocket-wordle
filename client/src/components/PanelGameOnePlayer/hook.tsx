@@ -5,6 +5,7 @@ import { UsedLetters } from '../Keyboard/interface';
 import { isAlphabeticalInput } from '../../utils/utils';
 import { socket } from '../../utils/socket';
 import { GAME_CONFIG } from '../../constants/gameConfig';
+import { JoinRoomOnePlayData } from './types';
 
 export const useWordleOnePlayer = () => {
     const hasEmittedNewGame = useRef(false);
@@ -14,6 +15,8 @@ export const useWordleOnePlayer = () => {
     );
     const [round, setRound] = useState<number>(0);
     const [isCorrectAnswer, setIsCorrectAnswer] = useState<boolean>(false);
+    const [msgGameEnd, setMsgGameEnd] = useState<string>('');
+    const [msgHint, setMsgHint] = useState<string>('');
 
     const [answer, setAnswer] = useState<string | null>(null);
     const [currGuess, setCurrGuess] = useState<string>('');
@@ -33,6 +36,7 @@ export const useWordleOnePlayer = () => {
         });
         setUsedWords((prevUsedWords) => [...prevUsedWords, guess]);
         setCurrGuess('');
+        setMsgHint('');
 
         updateUsedLetters(formattedGuessWord);
 
@@ -45,8 +49,7 @@ export const useWordleOnePlayer = () => {
             hasEmittedNewGame.current = true;
         }
 
-        socket.on('join_room_one_play', (data: any) => {
-            console.log('join_room_one_play', data);
+        socket.on('join_room_one_play', (data: JoinRoomOnePlayData) => {
             setMaxRound(data.maxRound);
             setWordGuessList([...Array(data.maxRound)]);
         });
@@ -62,7 +65,9 @@ export const useWordleOnePlayer = () => {
                 data;
 
             if (validation === 'NOT_REAL_WORD') {
-                alert('Input word is not a real word, please clear and again');
+                setMsgHint(
+                    'Input word is not a real word, please clear and again'
+                );
                 return;
             }
             addNewGuessWord(formattedGuessWord, guess);
@@ -93,18 +98,26 @@ export const useWordleOnePlayer = () => {
         }
 
         if (e.key === 'Enter') {
+            setMsgHint('');
+
             if (round > maxRound) {
-                console.log('Game Over');
+                setTimeout(() => {
+                    setMsgHint('Game Over');
+                });
                 return;
             }
 
             if (usedWords.includes(currGuess)) {
-                alert('Duplicated Guess');
+                setTimeout(() => {
+                    setMsgHint('Duplicated Guess');
+                });
                 return;
             }
 
             if (currGuess.length !== 5) {
-                console.log('Input word need to be 5 characters');
+                setTimeout(() => {
+                    setMsgHint('Input word need to be 5 characters');
+                });
                 return;
             }
 
@@ -119,15 +132,12 @@ export const useWordleOnePlayer = () => {
         window.addEventListener('keyup', handleKeyUp);
 
         if (isCorrectAnswer) {
-            alert('Correct, you win!');
+            setMsgGameEnd('Correct, you win!');
             window.removeEventListener('keyup', handleKeyUp);
         }
 
         if (round >= maxRound) {
-            setTimeout(() => {
-                alert(`Run out of gussess. You lose! Answer: ${answer}`);
-            }, 2500);
-
+            setMsgGameEnd(`You lose! Run out of gussess. \n Answer: ${answer}`);
             window.removeEventListener('keyup', handleKeyUp);
         }
 
@@ -173,6 +183,8 @@ export const useWordleOnePlayer = () => {
         currGuess,
         wordGuessList,
         isGameEnded: isCorrectAnswer || round >= maxRound,
-        usedLetters
+        usedLetters,
+        msgGameEnd,
+        msgHint
     };
 };

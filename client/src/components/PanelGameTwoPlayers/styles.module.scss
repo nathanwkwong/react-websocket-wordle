@@ -2,5 +2,15 @@
     .boardWrapper {
         display: flex;
         gap: 50px;
+
+        .btnPlayAgain {
+            margin-top: 20px;
+        }
+    }
+
+    .msgMatching {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
     }
 }
