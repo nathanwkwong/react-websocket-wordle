@@ -1,4 +1,5 @@
 import { BoardWords } from '../BoardWords';
+import { Header } from '../Header';
 import { Keyboard } from '../Keyboard';
 import { useWordleTwoPlayers } from './hook';
 import css from './styles.module.scss';
@@ -23,6 +24,7 @@ export const PanelGameTwoPlayers = () => {
         <div className={css.container}>
             <div className={css.boardWrapper}>
                 <div>
+                    <Header title="You" />
                     <BoardWords
                         currGuess={currGuess}
                         wordGuessList={wordGuessList}
@@ -39,12 +41,15 @@ export const PanelGameTwoPlayers = () => {
                     )}
                     <Keyboard usedLetters={usedLetters} />
                 </div>
-                <BoardWords
-                    showLetter={false}
-                    currGuess={currGuess}
-                    wordGuessList={opponentWordGuessList}
-                    round={opponentRound}
-                />
+                <div>
+                    <Header title="Opponent" />
+                    <BoardWords
+                        showLetter={false}
+                        currGuess={currGuess}
+                        wordGuessList={opponentWordGuessList}
+                        round={opponentRound}
+                    />
+                </div>
             </div>
         </div>
     );

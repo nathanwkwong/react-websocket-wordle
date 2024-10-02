@@ -1,22 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { io } from 'socket.io-client';
 import { CheckAnswerData, WordGuess } from '../../types/types';
 import { UsedLetters } from '../Keyboard/interface';
 import { isAlphabeticalInput } from '../../utils/utils';
 import { socket } from '../../utils/socket';
+import { GAME_CONFIG } from '../../constants/gameConfig';
 
 export const useWordleOnePlayer = () => {
     const hasEmittedNewGame = useRef(false);
 
-    const [maxRound, setMaxRound] = useState<number>(5);
+    const [maxRound, setMaxRound] = useState<number>(
+        GAME_CONFIG.defaultMaxRound
+    );
     const [round, setRound] = useState<number>(0);
     const [isCorrectAnswer, setIsCorrectAnswer] = useState<boolean>(false);
 
     const [answer, setAnswer] = useState<string | null>(null);
     const [currGuess, setCurrGuess] = useState<string>('');
 
-    const [wordGuessList, setWordGuessList] = useState<WordGuess[]>([]);
+    const [wordGuessList, setWordGuessList] = useState<WordGuess[]>([
+        ...Array(GAME_CONFIG.defaultMaxRound)
+    ]);
     const [usedWords, setUsedWords] = useState<string[]>([]);
     const [usedLetters, setUsedLetters] = useState<UsedLetters>({});
 

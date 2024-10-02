@@ -1,2 +1,10 @@
 .container {
+    display: flex;
+    flex-direction: column;
+
+    .btnLink {
+        margin-top: 20px;
+        width: 100%;
+        text-align: center;
+    }
 }

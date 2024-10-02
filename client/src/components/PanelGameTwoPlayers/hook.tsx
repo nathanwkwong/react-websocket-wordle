@@ -13,7 +13,9 @@ import { socket } from '../../utils/socket';
 export const useWordleTwoPlayers = () => {
     const hasEmittedNewGame = useRef(false);
 
-    const [maxRound, setMaxRound] = useState<number>(5);
+    const [maxRound, setMaxRound] = useState<number>(
+        GAME_CONFIG.defaultMaxRound
+    );
     const [round, setRound] = useState<number>(0);
     const [opponentRound, setOpponentRound] = useState<number>(0);
     const [roomStatus, setRoomStatus] = useState<RoomStatus>('waiting');
@@ -22,10 +24,13 @@ export const useWordleTwoPlayers = () => {
     const [answer, setAnswer] = useState<string | null>(null);
     const [currGuess, setCurrGuess] = useState<string>('');
 
-    const [wordGuessList, setWordGuessList] = useState<WordGuess[]>([]);
+    const [wordGuessList, setWordGuessList] = useState<WordGuess[]>([
+        ...Array(GAME_CONFIG.defaultMaxRound)
+    ]);
     const [opponentWordGuessList, setOpponentWordGuessList] = useState<
         WordGuess[]
-    >([]);
+    >([...Array(GAME_CONFIG.defaultMaxRound)]);
+
     const [usedWords, setUsedWords] = useState<string[]>([]);
     const [usedLetters, setUsedLetters] = useState<UsedLetters>({});
 
