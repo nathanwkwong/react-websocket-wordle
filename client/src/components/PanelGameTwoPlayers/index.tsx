@@ -20,7 +20,8 @@ export const PanelGameTwoPlayers = () => {
         isGameEnded,
         roomStatus,
         msgGameEnd,
-        msgHint
+        msgHint,
+        opponentHash
     } = useWordleTwoPlayers();
 
     useEffect(() => {
@@ -55,7 +56,11 @@ export const PanelGameTwoPlayers = () => {
                     <Keyboard usedLetters={usedLetters} msgHint={msgHint} />
                 </div>
                 <div>
-                    <Header title="Opponent" />
+                    <Header
+                        title={
+                            opponentHash ? `id: ${opponentHash}` : 'Opponent'
+                        }
+                    />
                     <BoardWords
                         showLetter={false}
                         currGuess={currGuess}

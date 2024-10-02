@@ -87,6 +87,12 @@ io.on('connection', (socket) => {
         const availableRoom = findAvailableRoom();
         if (availableRoom) {
             const roomId = availableRoom.roomId;
+
+            if (!availableRoom.playerOneId) {
+                socket.emit('server_error');
+                return;
+            }
+
             socket.join(roomId);
 
             roomMap[roomId] = {
@@ -98,8 +104,7 @@ io.on('connection', (socket) => {
             const newGame = {
                 roomId,
                 maxRound: GAME_CONFIG.maxRound,
-                status: 'playing',
-                playerId
+                status: 'playing'
             };
 
             console.log(
@@ -107,7 +112,17 @@ io.on('connection', (socket) => {
                 availableRoom.answer,
                 roomId
             );
-            io.sockets.in(roomId).emit('join_room_two_play', newGame);
+
+            socket.emit('join_room_two_play', {
+                ...newGame,
+                opponentHash: availableRoom.playerOneId.slice(0, 5)
+            });
+
+            io.to(availableRoom.playerOneId).emit('join_room_two_play', {
+                ...newGame,
+                opponentHash: playerId.slice(0, 5)
+            });
+            // io.sockets.in(roomId).emit('join_room_two_play', newGame);
         } else {
             const newRoomId = socket.id + '_room';
             const answer = generateGameWord();
@@ -167,7 +182,7 @@ io.on('connection', (socket) => {
 
         const roomData = roomMap[roomId];
 
-        if (playerId) {
+        if (!roomData) {
             socket.emit('server_error');
             return;
         }

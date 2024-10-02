@@ -23,6 +23,7 @@ export const useWordleTwoPlayers = () => {
     );
     const [round, setRound] = useState<number>(0);
     const [opponentRound, setOpponentRound] = useState<number>(0);
+    const [opponentHash, setOpponentName] = useState<string>('');
     const [roomStatus, setRoomStatus] = useState<RoomStatus>('waiting');
     const [roomId, setRoomId] = useState<string>('');
 
@@ -79,6 +80,7 @@ export const useWordleTwoPlayers = () => {
             setOpponentWordGuessList([...Array(data.maxRound)]);
             setRoomStatus(data.status);
             setRoomId(data.roomId);
+            setOpponentName(data.opponentHash);
         });
 
         socket.on(
@@ -295,6 +297,7 @@ export const useWordleTwoPlayers = () => {
         usedLetters,
         roomStatus,
         msgGameEnd,
-        msgHint
+        msgHint,
+        opponentHash
     };
 };

@@ -9,6 +9,7 @@ export interface JoinRoomTwoPlayersData {
     maxRound: number;
     status: RoomStatus;
     roomId: string;
+    opponentHash: string;
 }
 
 export interface OpponentRunOutOfGuessData {
