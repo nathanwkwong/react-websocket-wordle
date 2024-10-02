@@ -1,4 +1,4 @@
-import { Header } from '../../components/Header';
+import { BoardHeader } from '../../components/BoardHeader';
 import { Menu } from '../../components/Menu';
 import { PanelGameOnePlayer } from '../../components/PanelGameOnePlayer';
 
@@ -6,7 +6,7 @@ export const PageOnePlayer = () => {
     return (
         <div>
             <Menu />
-            <Header title="You" />
+            <BoardHeader title="You" />
             <PanelGameOnePlayer />
         </div>
     );

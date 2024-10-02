@@ -1,4 +1,4 @@
-import { Header } from '../../components/Header';
+import { Header } from './Header';
 import css from './styles.module.scss';
 
 export const PageHome = () => {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BoardWords } from '../BoardWords';
-import { Header } from '../Header';
+import { BoardHeader } from '../BoardHeader';
 import { Keyboard } from '../Keyboard';
 import { Modal } from '../Modal';
 import { useWordleTwoPlayers } from './hook';
@@ -39,7 +39,7 @@ export const PanelGameTwoPlayers = () => {
         <div className={css.container}>
             <div className={css.boardWrapper}>
                 <div>
-                    <Header title="You" />
+                    <BoardHeader title="You" />
                     <BoardWords
                         currGuess={currGuess}
                         wordGuessList={wordGuessList}
@@ -57,7 +57,7 @@ export const PanelGameTwoPlayers = () => {
                     <Keyboard usedLetters={usedLetters} msgHint={msgHint} />
                 </div>
                 <div>
-                    <Header
+                    <BoardHeader
                         title={
                             opponentHash
                                 ? `Opponent: ${opponentHash}`
