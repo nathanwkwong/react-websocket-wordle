@@ -29,15 +29,17 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-    console.log('connected', socket.id);
+    console.log('A player connected to the server', socket.id);
 
     socket.on('join_room_one_play', () => {
+        const playerId = socket.id;
         const newAnswer = generateGameWord();
 
         roomMap[socket.id] = {
             roomId: socket.id,
             answer: newAnswer,
-            status: 'playing'
+            status: 'playing',
+            playerOneId: playerId
         };
 
         console.log('A room created for one play', newAnswer, socket.id);
@@ -107,24 +109,23 @@ io.on('connection', (socket) => {
             );
             io.sockets.in(roomId).emit('join_room_two_play', newGame);
         } else {
-            // case: no room is available, then create a new room
+            const newRoomId = socket.id + '_room';
             const answer = generateGameWord();
-            const roomId = socket.id + '_room';
 
-            socket.join(roomId);
+            socket.join(newRoomId);
 
-            roomMap[roomId] = {
-                roomId,
+            roomMap[newRoomId] = {
+                roomId: newRoomId,
                 answer,
                 playerOneId: playerId,
                 status: 'waiting'
             };
             const newGame = {
-                roomId,
+                roomId: newRoomId,
                 maxRound: GAME_CONFIG.maxRound,
                 status: 'waiting'
             };
-            console.log('A room created for two play:', answer, roomId);
+            console.log('A room created for two play:', answer, newRoomId);
             socket.emit('join_room_two_play', newGame);
         }
     });
@@ -143,8 +144,11 @@ io.on('connection', (socket) => {
             return;
         }
 
-        const answer = roomData.answer;
-        io.to(opponentId).emit('opponent_run_out_of_guess', { answer });
+        const result = {
+            answer: roomData.answer
+        };
+
+        io.to(opponentId).emit('opponent_run_out_of_guess', result);
     });
 
     socket.on('check_answer_two_play', (data: CheckAnswerData) => {
@@ -157,7 +161,6 @@ io.on('connection', (socket) => {
         const roomData = roomMap[roomId];
 
         if (!roomData) {
-            // end game
             return;
         }
 
@@ -169,7 +172,6 @@ io.on('connection', (socket) => {
                 : roomData.playerOneId;
 
         if (!opponentId) {
-            // player win
             return;
         }
 
@@ -196,6 +198,11 @@ io.on('connection', (socket) => {
                 answer: answerResult,
                 formattedGuessWord,
                 validation: 'VALID'
+            };
+
+            roomMap[roomId] = {
+                ...roomData,
+                status: 'end'
             };
 
             socket.emit('check_answer_two_play', result);
@@ -240,7 +247,12 @@ io.on('connection', (socket) => {
                 if (!opponentId) {
                     return;
                 }
-                socket.to(opponentId).emit('opponent_disconnected', { answer });
+
+                const result = {
+                    answer
+                };
+
+                socket.to(opponentId).emit('opponent_disconnected', result);
             }
         });
     });
