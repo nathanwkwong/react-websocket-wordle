@@ -135,12 +135,19 @@ io.on('connection', (socket) => {
         const playerId = socket.id;
 
         const roomData = roomMap[roomId];
+
+        if (!roomData) {
+            socket.emit('server_error');
+            return;
+        }
+
         const opponentId =
             roomData.playerOneId === playerId
                 ? roomData.playerTwoId
                 : roomData.playerOneId;
 
         if (!opponentId) {
+            socket.emit('server_error');
             return;
         }
 
@@ -160,7 +167,8 @@ io.on('connection', (socket) => {
 
         const roomData = roomMap[roomId];
 
-        if (!roomData) {
+        if (playerId) {
+            socket.emit('server_error');
             return;
         }
 
@@ -172,6 +180,7 @@ io.on('connection', (socket) => {
                 : roomData.playerOneId;
 
         if (!opponentId) {
+            socket.emit('server_error');
             return;
         }
 
@@ -242,9 +251,8 @@ io.on('connection', (socket) => {
 
                 const answer = roomMap[roomKey].answer;
 
-                delete roomMap[roomKey];
-
                 if (!opponentId) {
+                    socket.emit('server_error');
                     return;
                 }
 
@@ -253,6 +261,8 @@ io.on('connection', (socket) => {
                 };
 
                 socket.to(opponentId).emit('opponent_disconnected', result);
+
+                delete roomMap[roomKey];
             }
         });
     });

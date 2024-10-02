@@ -93,9 +93,15 @@ export const useWordleTwoPlayers = () => {
             }
         );
 
+        socket.on('server_error', () => {
+            setMsgGameEnd('Oops, there is some error on the server');
+            setRoomStatus('ended');
+        });
+
         return () => {
             socket.off('join_room_two_play');
             socket.off('opponent_guess');
+            socket.off('server_error');
         };
     }, []);
 
@@ -284,6 +290,7 @@ export const useWordleTwoPlayers = () => {
         isGameEnded:
             roomStatus === 'opponent_win' ||
             roomStatus === 'self_win' ||
+            roomStatus === 'ended' ||
             round >= maxRound,
         usedLetters,
         roomStatus,

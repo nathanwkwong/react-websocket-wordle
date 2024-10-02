@@ -1,4 +1,9 @@
-export type RoomStatus = 'waiting' | 'playing' | 'self_win' | 'opponent_win';
+export type RoomStatus =
+    | 'waiting'
+    | 'playing'
+    | 'self_win'
+    | 'opponent_win'
+    | 'ended';
 
 export interface JoinRoomTwoPlayersData {
     maxRound: number;

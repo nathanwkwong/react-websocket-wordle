@@ -68,9 +68,6 @@ export const PanelGameTwoPlayers = () => {
                             <LoadingDots />
                         </span>
                     )}
-                    {roomStatus === 'playing' && (
-                        <span className={css.msgMatching}>Game started</span>
-                    )}
                 </div>
                 {showModal && (
                     <Modal message={msgGameEnd} setShowModal={setShowModal} />
