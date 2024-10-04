@@ -1,6 +1,6 @@
 # Wordle
 
-A Wordle support one or two play, with a server to store the game answer and data, which built from Typescript, React.js, SCSS, Node.js and Websocket.
+A game called Wordle, https://en.wikipedia.org/wiki/Wordle, which supports one or two play, with a server to store the game answer and data, which built from Typescript, React.js, SCSS, Node.js and Websocket.
 
 ## Installation and Local Running
 
@@ -56,8 +56,8 @@ For both one and two play, the Wordle game play can be configured from a variabl
 
 ### Bonus features
 
-1. For multi player mode, even if the opponent disconnected, the game can still continuous as the player left will, this can improve user game play experience.
-2. The app have two modes, a player can still play with their own when there is no other player online which can improve user experience.
+1. The app have two modes, a player can still play with their own when there is no other player online which can improve user experience.
+2. For multi player mode, even if the opponent disconnected, the game can still continuous as the player left will, this can improve user game play experience.
 
 ## Screenshots
 
