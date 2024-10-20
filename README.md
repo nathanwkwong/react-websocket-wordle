@@ -39,26 +39,6 @@ For both one and two play, the Wordle game play can be configured from a variabl
 
 -   During the game, if the opponent disconnected from the server, the player inside the room can finish the game their own with server connection.
 
-### Trade-off decisions:
-
-1.  To reduce server structure complexity, one and two play game mode backend business logic are put within same file, which could be further refactored into two websockets services for two concern to increase maintainability at the current scale.
-
-2.  To reduce game play complexity, room are assigned two play game by the server. Further improvement/a new feature could be letting user to join a room with their friend with a room key to improve user experience.
-
-3.  To reduce game data collection complexity, the two play game mode traded-off parts of the user experience. We could implement more socket to collect and store more game data to the server, e.g. players input status and guesses, then:
-
-    -   We could display it to the other player to let the player know the opponent is typing which could increase the interaction between two.
-    -   When ending a game, we could display opponent guess history.
-
-4.  To improve user experience, which trade-off the client and server structure complexity, the project includes both one and two play modes, which could allow a player to play their own if there is no other player online.
-
-5.  To reduce UI complexity, a mobile version could be implement to improve user experience of the game play for mobile users.
-
-### Bonus features
-
-1. The app have two modes, a player can still play with their own when there is no other player online which can improve user experience.
-2. For multi player mode, even if the opponent disconnected, the game can still continuous as the player left will, this can improve user game play experience.
-
 ## Screenshots
 
 Home:<br/>
